@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jiwa: Field Edition — Immersion Card</title>
+<title>SAJIWA BEYOND THE DESK — Immersion Card</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Syne:wght@700;800&display=swap');
 
@@ -634,6 +634,106 @@
   body.dark .check-level-label { color: #CCCCCC; }
   body.dark .level-pill { background: #1E1E1E; border-color: #333333; color: #888888; }
 
+
+  /* ── EMAIL GATE ── */
+  .email-gate {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 40px 24px;
+    background: #FFFFFF;
+  }
+  body.dark .email-gate { background: #0E0E0E; }
+
+  .email-gate-box {
+    background: #FFFFFF;
+    border: 1.5px solid #E5E5E5;
+    border-radius: 20px;
+    padding: 48px 40px;
+    max-width: 420px; width: 100%;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+  }
+  body.dark .email-gate-box {
+    background: #1A1A1A;
+    border-color: #333333;
+  }
+
+  .email-gate-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 800;
+    margin-bottom: 8px;
+    color: #1A1A1A;
+  }
+  body.dark .email-gate-logo { color: #FFFFFF; }
+  .email-gate-logo span { color: #FF3947; }
+
+  .email-gate-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px; font-weight: 800;
+    color: #1A1A1A; margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  body.dark .email-gate-title { color: #FFFFFF; }
+
+  .email-gate-sub {
+    font-size: 13px; color: #888888;
+    margin-bottom: 32px; line-height: 1.6;
+  }
+
+  .email-gate-input {
+    width: 100%;
+    background: #F8F8F8;
+    border: 1.5px solid #E0E0E0;
+    border-radius: 10px;
+    color: #1A1A1A;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px; padding: 14px 16px;
+    outline: none; margin-bottom: 12px;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+  }
+  body.dark .email-gate-input {
+    background: #252525; border-color: #333333; color: #FFFFFF;
+  }
+  .email-gate-input:focus { border-color: #FF3947; }
+  .email-gate-input.error { border-color: #FF3947; background: #FFF5F5; }
+
+  .email-gate-error {
+    font-size: 12px; color: #FF3947;
+    margin-bottom: 12px; display: none;
+    text-align: left;
+  }
+  .email-gate-error.visible { display: block; }
+
+  .email-gate-btn {
+    width: 100%;
+    background: #FF3947; color: #FFFFFF;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px; font-weight: 800;
+    padding: 14px; border-radius: 10px;
+    border: none; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .email-gate-btn:hover {
+    background: #CC1F2B;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(255,57,71,0.3);
+  }
+
+  .email-gate-note {
+    font-size: 11px; color: #BBBBBB;
+    margin-top: 20px; line-height: 1.5;
+  }
+
+  .verified-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,57,71,0.08);
+    border: 1px solid rgba(255,57,71,0.2);
+    border-radius: 99px; padding: 4px 12px;
+    font-size: 11px; color: #FF3947; font-weight: 600;
+    margin-bottom: 24px;
+  }
+
   /* ── THEME TOGGLE ── */
   .theme-toggle {
     width: 36px; height: 36px; border-radius: 50%;
@@ -738,18 +838,40 @@
 
 <!-- HEADER -->
 <header class="header">
-  <div class="header-brand">JIWA<span>:</span>FIELD EDITION</div>
+  <div class="header-brand"><span style="color:#FF3947">SAJIWA</span> BEYOND THE DESK</div>
   <div style="display:flex;align-items:center;gap:10px;">
     <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Ganti Tema">
       <span id="theme-icon">🌙</span>
     </button>
-    <div class="header-badge">Immersion Card</div>
+    <img src="Jiwa Group_red (1).png" height="28" style="object-fit:contain;">
   </div>
 </header>
 
+<!-- EMAIL GATE -->
+<div class="email-gate" id="email-gate">
+  <div class="email-gate-box">
+    <div class="email-gate-logo"><span>HALO SAJIWA</div>
+    <h2 class="email-gate-title">Selamat Datang di Immersion Card</h2>
+    <p class="email-gate-sub">Harap login terlebih dahulu yaa😊</p>
+    <input
+      class="email-gate-input"
+      id="gate-email"
+      type="email"
+      placeholder="Masukkan email kamu"
+      onkeydown="if(event.key==='Enter') verifyEmail()"
+    >
+    <div class="email-gate-error" id="gate-error">
+      ⚠️ Email kamu tidak terdaftar. Gunakan email kantor kamu.
+    </div>
+    <button class="email-gate-btn" onclick="verifyEmail()">Masuk ke Immersion Card →</button>
+    <p class="email-gate-note">Email kamu tidak akan disimpan sebagai data login.<br>Hanya digunakan untuk verifikasi akses.</p>
+  </div>
+</div>
+
 <!-- HERO -->
-<section class="hero" id="hero">
-  <p class="hero-eyebrow">Program Learning 2026 · OKR Wajib</p>
+<section class="hero" id="hero" style="display:none;">
+  <div class="verified-badge">✓ <span id="verified-email-display"></span></div>
+  <p class="hero-eyebrow">BUSINESS UNIT IMMERSION</p>
   <h1 class="hero-title">
     Immersion
     <span class="accent">Card.</span>
@@ -768,7 +890,7 @@
 </section>
 
 <!-- FORM -->
-<div class="form-wrapper" id="form-section">
+<div class="form-wrapper" id="form-section" style="display:none;">
 
   <!-- Progress -->
   <div class="progress-bar-wrap">
@@ -862,14 +984,14 @@
       <div class="obs-section">
         <div class="obs-section-title"><span>🌅</span> Opening Shift Ops</div>
         <div class="obs-yesno">
-          <span class="obs-yesno-text">Placeholder checklist item 1 — edit sesuai kebutuhan</span>
+          <span class="obs-yesno-text">Apakah outlet dalam keadaan siap beroperasi?</span>
           <div class="obs-yesno-btns">
             <button class="yn-btn yes" onclick="setYN(this,'yes')">Yes</button>
             <button class="yn-btn no" onclick="setYN(this,'no')">No</button>
           </div>
         </div>
         <div class="obs-yesno">
-          <span class="obs-yesno-text">Placeholder checklist item 2 — edit sesuai kebutuhan</span>
+          <span class="obs-yesno-text">Apakah team outlet sudah grooming yang baik dan sesuai standar?</span>
           <div class="obs-yesno-btns">
             <button class="yn-btn yes" onclick="setYN(this,'yes')">Yes</button>
             <button class="yn-btn no" onclick="setYN(this,'no')">No</button>
@@ -1218,6 +1340,40 @@
 </div>
 
 <script>
+  // ── EMAIL GATE ──
+  const ALLOWED_DOMAIN = 'jiwagroup.com';
+  let verifiedEmail = '';
+
+  function verifyEmail() {
+    const input = document.getElementById('gate-email');
+    const error = document.getElementById('gate-error');
+    const email = input.value.trim().toLowerCase();
+    const domain = email.split('@')[1];
+
+    if (!email || domain !== ALLOWED_DOMAIN) {
+      input.classList.add('error');
+      error.classList.add('visible');
+      input.focus();
+      return;
+    }
+
+    // Verified!
+    verifiedEmail = email;
+    input.classList.remove('error');
+    error.classList.remove('visible');
+
+    // Show verified badge
+    document.getElementById('verified-email-display').textContent = email;
+
+    // Hide gate, show app
+    document.getElementById('email-gate').style.display = 'none';
+    document.getElementById('hero').style.display = '';
+    document.getElementById('form-section').style.display = '';
+
+    // Pre-fill nama field with email prefix as hint
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   let currentType = 'outlet';
   let rating = 0;
   let emojiScores = {};
@@ -1306,7 +1462,7 @@
   }
 
   // ── GANTI URL INI dengan URL Google Apps Script kamu ──
-  const SCRIPT_URL = 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTkcUpnttJo4OCa_1XBReTL68ra1uxlqkQ0JvXANjkAE2TAMrMINth49h2w8Ywu_Qitg/exec';
 
   async function submitCard() {
     const nama = document.getElementById('f-nama').value.trim();
@@ -1341,6 +1497,7 @@
 
     const payload = {
       timestamp: new Date().toISOString(),
+      email: verifiedEmail,
       tipe: currentType === 'outlet' ? 'Outlet' : 'HUB',
       nama, dept, lokasi, mentor1, mentor2, tanggal,
       aktivitas: checked,
