@@ -439,7 +439,7 @@
   .hidden { display: none !important; }
   .char-count { font-size: 10px; color: #CCCCCC; text-align: right; margin-top: 4px; }
 
-  /* ── NEW TRANSITION ANIMATIONS ── */
+  /* ── TRANSITION ANIMATIONS ── */
   .email-gate {
     min-height: 100vh;
     display: flex; flex-direction: column;
@@ -455,7 +455,6 @@
     pointer-events: none;
   }
 
-  /* Custom Loading Overlay */
   .transition-loader {
     position: fixed; inset: 0; background: #FFFFFF;
     z-index: 999; display: flex; flex-direction: column;
@@ -481,7 +480,6 @@
     100% { transform: rotate(360deg); }
   }
 
-  /* App Content Smooth Entry */
   #hero, #form-section {
     opacity: 0; transform: translateY(20px);
     transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -490,7 +488,7 @@
     opacity: 1; transform: translateY(0);
   }
 
-  /* CSS untuk bagian lain */
+  /* Form komponen tambahan */
   .email-gate-box {
     background: #FFFFFF; border: 1.5px solid #E5E5E5; border-radius: 20px;
     padding: 48px 40px; max-width: 420px; width: 100%;
@@ -550,18 +548,15 @@
   .level-btn:hover { border-color: var(--red); color: var(--red); }
   .level-btn.active { background: var(--red); border-color: var(--red); color: #fff; }
 
-  /* Dark mode tambahan */
   body.dark .transition-loader { background: #0E0E0E; }
   body.dark .obs-section-title { border-bottom-color: #2A2A2A; }
   body.dark .obs-yesno, body.dark .obs-level { background: #1E1E1E; border-color: #2A2A2A; }
   body.dark .obs-yesno-text, body.dark .obs-level-text { color: #CCCCCC; }
   body.dark .yn-btn, body.dark .level-btn { border-color: #444; color: #888; }
 
-  /* ── THEME TOGGLE ── */
   .theme-toggle { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid #E0E0E0; background: transparent; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
   .theme-toggle:hover { border-color: var(--red); transform: scale(1.1); }
 
-  /* ── DARK THEME ── */
   body.dark { background: #0E0E0E; color: #FFFFFF; }
   body.dark .header { background: rgba(14,14,14,0.92); border-bottom-color: #333333; }
   body.dark .theme-toggle { border-color: #444444; }
@@ -1067,11 +1062,11 @@
     <div class="feedback-grid">
       <div class="feedback-field">
         <label>Feedback untuk Program</label>
-        <textarea id="f-fb-program" placeholder="Apa yang bisa diperbaiki dari program ini?"></textarea>
+        <textarea id="f-fb-program" placeholder="Apa yang bisa diperbaiki dari program ini?" oninput="updateProgress()"></textarea>
       </div>
       <div class="feedback-field">
         <label>Feedback untuk Mentor</label>
-        <textarea id="f-fb-mentor" placeholder="Bagaimana pengalaman kamu dengan mentor?"></textarea>
+        <textarea id="f-fb-mentor" placeholder="Bagaimana pengalaman kamu dengan mentor?" oninput="updateProgress()"></textarea>
       </div>
     </div>
   </div>
@@ -1177,39 +1172,32 @@
 
     document.getElementById('verified-email-display').textContent = email;
 
-    // FITUR TRANSISI MENUJU FORM UTAMA
     const loginGate = document.getElementById('email-gate');
     const loader = document.getElementById('transition-loader');
     const heroSec = document.getElementById('hero');
     const formSec = document.getElementById('form-section');
 
-    // 1. Memicu animasi memudar pada Login Box
     loginGate.classList.add('fade-out');
 
     setTimeout(() => {
       loginGate.style.display = 'none';
-      
-      // 2. Memunculkan overlay Loading berputar
       loader.classList.add('visible');
 
       setTimeout(() => {
-        // 3. Menghilangkan overlay Loading
         loader.classList.remove('visible');
 
-        // 4. Memunculkan Form Utama dengan transisi halus ke atas
         heroSec.style.display = '';
         formSec.style.display = '';
         
-        // Triger reflow untuk transisi CSS
         void heroSec.offsetWidth; 
         
         heroSec.classList.add('fade-in-up');
         formSec.classList.add('fade-in-up');
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 1500); // Durasi loading screen berputar (1.5 detik)
+      }, 1500);
 
-    }, 500); // Sinkronisasi dengan durasi CSS fade-out box login
+    }, 500);
   }
 
   let currentType = 'outlet';
@@ -1287,25 +1275,66 @@
     document.getElementById(counterId).textContent = el.value.length + ' karakter';
   }
 
+  // ── LOGIKA PROGRESS BAR SUPER TOTAL (DIPERBAIKI) ──
   function updateProgress() {
-    const fields = [
+    let totalItems = 0;
+    let filledItems = 0;
+
+    // 1. Validasi Input teks dasar & pilihan dropdown
+    const textInputs = [
       document.getElementById('f-nama').value.trim(),
       document.getElementById('f-dept').value.trim(),
-      currentType === 'outlet' ? document.getElementById('f-outlet').value.trim() : document.getElementById('f-hub').value.trim(),
       document.getElementById('f-tanggal').value,
+      document.getElementById('f-mentor1').value.trim(),
+      document.getElementById('f-mentor2').value.trim(),
       document.getElementById('f-see').value.trim(),
       document.getElementById('f-feel').value.trim(),
       document.getElementById('f-think').value.trim(),
       document.getElementById('f-word').value.trim(),
       document.getElementById('f-action').value.trim(),
-      rating > 0 ? 'ok' : '',
+      document.getElementById('f-fb-program').value.trim(),
+      document.getElementById('f-fb-mentor').value.trim()
     ];
-    const filled = fields.filter(Boolean).length;
-    const pct = Math.round((filled / fields.length) * 100);
+    totalItems += textInputs.length;
+    filledItems += textInputs.filter(Boolean).length;
 
+    // 2. Validasi Pilihan Lokasi berdasarkan tipe yang aktif
+    totalItems += 1; 
+    const lokasiValue = currentType === 'outlet' 
+      ? document.getElementById('f-outlet').value.trim() 
+      : document.getElementById('f-hub').value.trim();
+    if(lokasiValue) filledItems += 1;
+
+    // 3. Validasi Checklist Observasi Section B (Hanya hitung list yang aktif/tidak hidden)
+    const activeListId = currentType === 'outlet' ? 'checklist-outlet' : 'checklist-hub';
+    const activeBlocks = document.querySelectorAll(`#${activeListId} .obs-yesno, #${activeListId} .obs-level`);
+    
+    totalItems += activeBlocks.length;
+    activeBlocks.forEach(block => {
+      if (block.querySelector('.yn-btn.active') || block.querySelector('.level-btn.active')) {
+        filledItems += 1;
+      }
+    });
+
+    // 4. Validasi Rating & Emoji di Section E
+    totalItems += 2; // 1 untuk Emoji Energy, 1 untuk Star Rating
+    if (emojiScores['energy']) filledItems += 1;
+    if (rating > 0) filledItems += 1;
+
+    // 5. Validasi Unggah Foto Dokumentasi (Opsional / Tetap dihitung jika terisi)
+    totalItems += 4;
+    if (photoFiles['mentor1']) filledItems += 1;
+    if (photoFiles['mentor2']) filledItems += 1;
+    if (photoFiles['kegiatan1']) filledItems += 1;
+    if (photoFiles['kegiatan2']) filledItems += 1;
+
+    // Hitung Persentase Akurat
+    const pct = Math.round((filledItems / totalItems) * 100);
+
+    // Update Tampilan DOM progress bar
     document.getElementById('progress-fill').style.width = pct + '%';
     document.getElementById('progress-pct').textContent = pct + '%';
-    document.getElementById('progress-label').textContent = `Progress ${pct}% selesai`;
+    document.getElementById('progress-label').textContent = `Progress ${pct}% selesai (${filledItems}/${totalItems} diisi)`;
   }
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyvGWewKV6hDb8djxS6Q_cYpOTeP8pJkKQtvsnDrl8nFbnbmmFEW2Y_hTfxAohy94pwsw/exec';
@@ -1514,6 +1543,8 @@
       if(icon) icon.style.display = 'none';
       if(label) label.style.display = 'none';
       if(hint) hint.style.display = 'none';
+      
+      updateProgress();
     };
     reader.readAsDataURL(file);
   }
@@ -1537,6 +1568,8 @@
     if(label) label.style.display = '';
     if(hint) hint.style.display = '';
     if(input) input.value = '';
+    
+    updateProgress();
   }
 
   async function uploadPhotoToDrive(file, fileName) {
